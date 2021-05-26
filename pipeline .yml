@@ -1,0 +1,84 @@
+pipeline {
+  agent { label 'new_node' }
+
+  options {
+    timeout(time: 60, unit: 'MINUTES')
+    timestamps()
+    buildDiscarder(logRotator(numToKeepStr: '5'))
+  }
+
+  stages {
+
+    stage('Clean Workspace') {
+      steps {
+        echo "cleanWs()"
+      }
+    }
+
+    stage('Checkout') {
+      steps {
+        https://github.com/bio170/maven-hello-world.git
+      }
+    }
+
+    stage('Build') {
+      steps {
+        echo "hello world"
+      }
+    }
+
+    stage('Test') {
+      steps {
+        echo "mvn -v"
+      }
+    }
+
+    stage('upload war to nexus') {
+      steps {
+        echo "how are u"
+      }
+    }
+
+  
+    stage('Deploy') {
+      steps {
+        nexusArtifactUploader artifacts: [
+          [
+            artifactId: 'my-app',
+            classifier: '', 
+            file: 'targets/my-app-1.0.0.war', 
+            type: 'war'
+          ]
+        ], 
+           credentialsId: 'nexus', 
+           groupId: 'xcom.mycompany.app', 
+           nexusUrl: '0.0.0.0:8081',
+           nexusVersion: 'nexus2', 
+           protocol: 'http', 
+           repository: 'http://localhost:8081/#browse/browse:my-app', 
+           version: '4.0.0'
+      }
+    }
+  
+
+  post {
+    success {
+      echo "SUCCESS"
+    }
+    failure {
+      echo "FAILURE"
+    }
+    changed {
+      echo "Status Changed: [From: $currentBuild.previousBuild.result, To: $currentBuild.result]"
+    }
+    always {
+      script {
+        def result = currentBuild.result
+        if (result == null) {
+          result = "SUCCESS"
+        }
+      }
+    }
+  }
+  }
+}
