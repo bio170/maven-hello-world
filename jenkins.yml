@@ -1,0 +1,39 @@
+pipeline{
+
+  agent any
+  tools {
+      maven "MAVEN"
+  }
+  stages{
+      
+      stage('Build'){
+          steps{
+               sh script: 'mvn clean package'
+      }
+
+    }
+
+    stage('Upload War to Nexus') {
+      steps {
+            nexusArtifactUploader artifacts: [
+                [
+                    
+                 artifactId:'my-app',
+                 classifier: '', 
+                 file: 'targets/my-app-1.0.0.war', 
+                 type: 'war'
+          ]
+          
+         ], 
+           credentialsId: 'nexus', 
+           groupId: 'xcom.mycompany.app', 
+           nexusUrl: '0.0.0.0:8081',
+           nexusVersion: 'nexus3', 
+           protocol: 'http', 
+           repository: 'my-app', 
+           version: '4.0.0'
+      }
+    }
+  
+}
+}
