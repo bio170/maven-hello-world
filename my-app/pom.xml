@@ -6,7 +6,7 @@
   <packaging>jar</packaging>
   <version>1.0.0</version>
   <name>my-app</name>
-  <url>http://maven.apache.org</url>
+  <url>http://localhost:8081/repository/my-app/</url>
 
   <properties>
       <!-- This property will be set by the Maven Dependency plugin -->
